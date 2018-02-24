@@ -16,13 +16,6 @@ function getChannelIcon(channel) {
     return channel.guild.iconURL;
 }
 
-function getFooter(user) {
-    return {
-        icon_url: user.avatarURL,
-        text: user.username
-    };
-}
-
 function isInit() {
     return channel_log;
 }
@@ -45,7 +38,10 @@ bot.on("disconnect", () => {
 
     channel_log.send(getRichEmbed({
         title: "Exit",
-        footer: getFooter(bot)
+        footer: {
+        icon_url: bot.avatarURL,
+        text: bot.username
+    }
     })).catch(console.error);
 });
 */
@@ -62,7 +58,10 @@ bot.on("message", (message) => {
         description: message.cleanContent,
         timestamp: new Date(message.createdAt),
         title: "New message",
-        footer: getFooter(message.author)
+        footer: {
+            icon_url: message.author.avatarURL,
+            text: message.guild.member(message.author).nickname
+        }
     });
 
     message.attachments.forEach(function (attachment) {
@@ -84,7 +83,10 @@ bot.on("messageDelete", (message) => {
         description: message.cleanContent,
         timestamp: new Date(message.createdAt),
         title: "Delete message",
-        footer: getFooter(message.author)
+        footer: {
+            icon_url: message.author.avatarURL,
+            text: message.guild.member(message.author).nickname
+        }
     });
 
     message.attachments.forEach(function (attachment) {
@@ -106,7 +108,10 @@ bot.on("messageUpdate", (oldMessage, newMessage) => {
         description: oldMessage.cleanContent,
         timestamp: new Date(oldMessage.createdAt),
         title: "Update message",
-        footer: getFooter(oldMessage.author)
+        footer: {
+            icon_url: oldMessage.author.avatarURL,
+            text: oldMessage.guild.member(oldMessage.author).nickname
+        }
     });
 
     oldMessage.attachments.forEach(function (attachment) {
@@ -124,7 +129,10 @@ bot.on("messageUpdate", (oldMessage, newMessage) => {
         description: newMessage.cleanContent,
         timestamp: new Date(newMessage.createdAt),
         title: "Updated message",
-        footer: getFooter(newMessage.author)
+        footer: {
+            icon_url: newMessage.author.avatarURL,
+            text: newMessage.guild.member(newMessage.author).nickname
+        }
     });
 
     newMessage.attachments.forEach(function (attachment) {
@@ -134,13 +142,17 @@ bot.on("messageUpdate", (oldMessage, newMessage) => {
     channel_log.send(newRichEmbed).catch(console.error);
 });
 
+// TODO: move to join guild
 bot.on("ready", () => {
     bot.user.setStatus("invisible").catch(console.error);
     channel_log = bot.channels.find("id", config.channel_log);
 
     channel_log.send(getRichEmbed({
         title: "Started",
-        footer: getFooter(bot)
+        footer: {
+            icon_url: bot.avatarURL,
+            text: bot.username
+        }
     })).catch(console.error);
 });
 
@@ -150,7 +162,10 @@ bot.on("reconnecting", () => {
 
     channel_log.send(getRichEmbed({
         title: "Reconnected",
-        footer: getFooter(bot)
+        footer: {
+            icon_url: bot.avatarURL,
+            text: bot.username
+        }
     })).catch(console.error);
 });
 
